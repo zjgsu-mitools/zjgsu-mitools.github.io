@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://mitools.zjgsu.xyz/sitemap.xml
+Sitemap: https://mit.zjgsu.xyz/sitemap.xml
