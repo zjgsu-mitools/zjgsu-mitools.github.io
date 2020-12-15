@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>RESTful API</title>
+	<link rel="stylesheet" href="/assets/reset.css">
+	<link rel="stylesheet" href="/assets/reveal.css">
+	<link rel="stylesheet" href="/assets/theme/solarized.css" id="theme">
+	<!-- Theme used for syntax highlighted code -->
+	<link rel="stylesheet" href="/plugin/highlight/monokai.css" id="highlight-theme">
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<h1>Spring MVC</h1>
+			</section>
+			<section>
+				<h3>HTTP Serverlets</h3>
+				<img data-src="images/serverlet.gif" width="800">
+			</section>
+			<section>
+				<h3>Spring</h3>
+				<img data-src="images/spring.png" width="600">
+			</section>
+			<section>
+				<h3>Spring MVC</h3>
+				<img data-src="images/mvc.png" width="600">
+			</section>
+			<section>
+				<h3>构建TODO app</h3>
+				<img data-src="images/todo.jpg" width="800">
+			</section>
+			<section>
+				<h3>What You Need</h3>
+				<ul>
+					<li>15分钟</li>
+					<li>Intellij IDEA或其他IDE</li>
+					<li>JDK 1.8+</li>
+					<li>Gradle 4+</li>
+				</ul>
+			</section>
+			<section>
+				<h3><a href="https://start.spring.io/">Spring Initialize</a></h3>
+				<img data-src="images/start.png" width="800">
+			</section>
+			<section>
+				<h3>添加资源表示类User</h3>
+				<pre>
+					<code class="java" data-trim data-noescape>
+					public class User {
+						private final long id;
+						private final String name;
+						private final String password;
+
+						public User(long id, String name, String password) {
+							this.id = id;
+							this.name = name;
+							this.password = password;
+						}
+
+						public long getId() {
+							return id;
+						}
+
+						public String getName() {
+							return name;
+						}
+
+						public String getPassword() {
+							return password;
+						}
+					}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h3>生成随机名字</h3>
+				<pre>
+					<code class="java" data-trim data-noescape>
+					import java.util.Random;
+
+					public class Utils {
+
+						public static String randomString(int length) {
+							int leftLimit = 97; // letter 'a'
+							int rightLimit = 122; // letter 'z'
+							Random random = new Random();
+
+							return random.ints(leftLimit, rightLimit + 1)
+									.limit(length)
+									.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+									.toString();
+						}
+					}
+					</code>
+				</pre>
+			</section>
+
+			<section>
+				<h3>生成随机用户</h3>
+				<pre>
+					<code class="java" data-trim data-noescape>
+					import java.util.ArrayList;
+					import java.util.List;
+
+					public class UserRepo {
+						private final List<User> mUsers = new ArrayList<>();
+						private static int mNextUserId = 0;
+
+						public UserRepo() {
+							for (int i = 0; i < 100; i++) {
+								createRandomUser();
+							}
+						}
+
+						public User createRandomUser() {
+							String name = Utils.randomString(5);
+							String password = name + "12345";
+							User user = new User(mNextUserId++, name, password);
+
+							mUsers.add(user);
+							return user;
+						}
+
+						public List<User> users() {
+							return mUsers;
+						}
+					}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h3>添加资源控制器UserController</h3>
+				<pre>
+					<code class="java" data-trim data-noescape>
+					import org.springframework.web.bind.annotation.GetMapping;
+					import org.springframework.web.bind.annotation.RestController;
+
+					import java.util.List;
+
+					@RestController
+					public class UserController {
+						private final UserRepo mRepos = new UserRepo();
+
+						@GetMapping("/users")
+						public List<User> listAllUsers() {
+							return mRepos.users();
+						}
+					}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h3>Run -> Edit Configurations ...</h3>
+				<img data-src="images/config.png" width="800">
+			</section>
+			<section>
+				<h3>Postman测试</h3>
+				<img data-src="images/postman.png" width="800">
+			</section>
+		</div>
+	</div>
+	<script src="/assets/reveal.js"></script>
+	<script src="/plugin/notes/notes.js"></script>
+	<script src="/plugin/markdown/markdown.js"></script>
+	<script src="/plugin/highlight/highlight.js"></script>
+	<script>
+
+
+
+		// More info about initialization & config:
+		// - https://revealjs.com/initialization/
+		// - https://revealjs.com/config/
+		Reveal.initialize({
+			hash: true,
+			// Learn about plugins: https://revealjs.com/plugins/
+			plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+		});
+	</script>
+</body>
+
+</html>
